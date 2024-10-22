@@ -12,4 +12,11 @@ todos = db.todos
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    return render_template('index.html')
+    if request.method=='POST':
+        content = request.form['content']
+        degree = request.form['degree']
+        todos.insert_one({'content': content, 'degree': degree})
+        return redirect(url_for('index'))
+
+    all_todos = todos.find()
+    return render_template('index.html', todos=all_todos)
