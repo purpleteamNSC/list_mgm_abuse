@@ -15,7 +15,7 @@ db = client["abuse"]  # Nome do banco de dados
 def add_ip(value, type, risk, notes, list):
     """Adiciona um IP único no banco de dados."""
     if db.ips.find_one({"value": value}):
-        return jsonify({"error": "IP já existe"}), 409
+        return jsonify({"message": "dado ja existe"}), 409
     db.ips.insert_one(
         {
             "value": value,
@@ -25,7 +25,7 @@ def add_ip(value, type, risk, notes, list):
             "list": list,
         }
     )
-    return jsonify({"message": "IP adicionado com sucesso"}), 201
+    return jsonify({"message": "ip adicionado"}), 201
 
 
 def get_ip(value):
@@ -34,7 +34,7 @@ def get_ip(value):
     if ip:
         ip["_id"] = str(ip["_id"])  # Converter ObjectId para string
         return jsonify(ip)
-    return jsonify({"error": "IP não encontrado"}), 404
+    return jsonify({"message": "sem dados"}), 404
 
 
 def get_all_ips(page=1, limit=100):
@@ -45,7 +45,7 @@ def get_all_ips(page=1, limit=100):
         for ip in ips:
             ip["_id"] = str(ip["_id"])
         return jsonify(ips)
-    return jsonify({"error": "Não existe IPs"}), 404
+    return jsonify({"message": "sem dados"}), 404
 
 
 def delete_ip(value):
@@ -53,11 +53,11 @@ def delete_ip(value):
     result = db.ips.delete_one({"value": value})
     print(result)
     if result.deleted_count > 0:
-        return jsonify({"message": "IP deletado com sucesso"}), 200
-    return jsonify({"error": "IP não encontrado"}), 404
+        return jsonify({"message": "ip deletado com sucesso"}), 200
+    return jsonify({"message": "sem dados"}), 404
 
 
 def delete_all_ips():
     """Deleta todos os IPs do banco de dados."""
     db.ips.delete_many({})
-    return jsonify({"message": "Todos os IPs deletados com sucesso"}), 204
+    return jsonify({"message": "todos os dados deletados com sucesso"}), 200
