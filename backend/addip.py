@@ -8,6 +8,6 @@ def add(n):
     print(response.json())
 
 t = 1
-while t != 254:
+while t != 255:
     add(t)
     t+=1

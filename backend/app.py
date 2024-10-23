@@ -4,6 +4,10 @@ from ip_manager import add_ip, get_ip, get_all_ips, delete_ip, delete_all_ips
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return '<h1>Lista Abuse</h1>'
+
 @app.route('/ip', methods=['POST'])
 def create_ip():
     """Adiciona um novo IP."""

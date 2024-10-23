@@ -4,7 +4,7 @@ import os
 
 # Inicializando o cliente MongoDB
 client = MongoClient('mongo', 27017, username=os.getenv('ME_CONFIG_MONGODB_ADMINUSERNAME'), password=os.getenv('ME_CONFIG_MONGODB_ADMINPASSWORD'))
-db = client['myDatabase']  # Nome do banco de dados
+db = client['abuse']  # Nome do banco de dados
 
 def add_ip(ip_address):
     """Adiciona um IP único no banco de dados."""
@@ -24,10 +24,12 @@ def get_ip(ip_address):
 def get_all_ips(page=1, limit=100):
     """Pega todos os IPs com paginação."""
     ips = list(db.ips.find().skip((page - 1) * limit).limit(limit))
-    # Converter ObjectId para string
-    for ip in ips:
-        ip['_id'] = str(ip['_id'])
-    return jsonify(ips)
+    if len(ips) != 0:
+        # Converter ObjectId para string
+        for ip in ips:
+            ip['_id'] = str(ip['_id'])
+        return jsonify(ips)
+    return jsonify({"error": "Não existe IPs"}), 404
 
 def delete_ip(ip_address):
     """Deleta um IP do banco de dados."""
