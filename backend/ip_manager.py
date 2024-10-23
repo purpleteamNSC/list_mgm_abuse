@@ -51,7 +51,6 @@ def get_all_ips(page=1, limit=100):
 def delete_ip(value):
     """Deleta um IP do banco de dados."""
     result = db.ips.delete_one({"value": value})
-    print(result)
     if result.deleted_count > 0:
         return jsonify({"message": "ip deletado com sucesso"}), 200
     return jsonify({"message": "sem dados"}), 404
