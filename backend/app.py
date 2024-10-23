@@ -1,29 +1,35 @@
-from flask import Flask, render_template, request, url_for, redirect
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-import os
+from flask import Flask, request
 
+from ip_manager import add_ip, get_ip, get_all_ips, delete_ip, delete_all_ips
 
 app = Flask(__name__)
 
-client = MongoClient('mongo', 27017, username=os.getenv('ME_CONFIG_MONGODB_ADMINUSERNAME'), password=os.getenv('ME_CONFIG_MONGODB_ADMINPASSWORD'))
+@app.route('/ip', methods=['POST'])
+def create_ip():
+    """Adiciona um novo IP."""
+    data = request.json
+    return add_ip(data['ip'])
 
-db = client.flask_db
-todos = db.todos
+@app.route('/ip/<ip_address>', methods=['GET'])
+def read_ip(ip_address):
+    """Busca um IP específico."""
+    return get_ip(ip_address)
 
+@app.route('/ips', methods=['GET'])
+def read_all_ips():
+    """Retorna todos os IPs com paginação."""
+    page = int(request.args.get('page', 1))
+    return get_all_ips(page)
 
-@app.route('/', methods=('GET', 'POST'))
-def index():
-    if request.method=='POST':
-        content = request.form['content']
-        degree = request.form['degree']
-        todos.insert_one({'content': content, 'degree': degree})
-        return redirect(url_for('index'))
+@app.route('/ip/<ip_address>', methods=['DELETE'])
+def remove_ip(ip_address):
+    """Deleta um IP específico."""
+    return delete_ip(ip_address)
 
-    all_todos = todos.find()
-    return render_template('index.html', todos=all_todos)
+@app.route('/ips', methods=['DELETE'])
+def remove_all_ips():
+    """Deleta todos os IPs."""
+    return delete_all_ips()
 
-@app.post('/<id>/delete/')
-def delete(id):
-    todos.delete_one({"_id": ObjectId(id)})
-    return redirect(url_for('index'))
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
