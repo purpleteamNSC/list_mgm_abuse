@@ -16,11 +16,17 @@ def add_ip(ip_address):
 def get_ip(ip_address):
     """Busca um IP no banco de dados."""
     ip = db.ips.find_one({"ip": ip_address})
-    return jsonify(ip) if ip else jsonify({"error": "IP não encontrado"}), 404
+    if ip:
+        ip['_id'] = str(ip['_id'])  # Converter ObjectId para string
+        return jsonify(ip)
+    return jsonify({"error": "IP não encontrado"}), 404
 
 def get_all_ips(page=1, limit=100):
     """Pega todos os IPs com paginação."""
     ips = list(db.ips.find().skip((page - 1) * limit).limit(limit))
+    # Converter ObjectId para string
+    for ip in ips:
+        ip['_id'] = str(ip['_id'])
     return jsonify(ips)
 
 def delete_ip(ip_address):

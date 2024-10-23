@@ -1,9 +1,8 @@
 from flask import Flask, request
-from config import Config
+
 from ip_manager import add_ip, get_ip, get_all_ips, delete_ip, delete_all_ips
 
 app = Flask(__name__)
-app.config.from_object(Config)
 
 @app.route('/ip', methods=['POST'])
 def create_ip():
