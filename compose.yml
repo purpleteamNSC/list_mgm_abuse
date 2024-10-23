@@ -30,7 +30,9 @@ services:
     container_name: backend
     hostname: backend
     restart: always
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
+    command: >
+      sh -c "pip install --no-cache-dir -r requirements.txt && python app.py"
     working_dir: /app
     volumes:
       - ./backend:/app
