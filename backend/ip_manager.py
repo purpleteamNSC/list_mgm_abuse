@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from flask import jsonify
 import os
+from datetime import datetime
+
 
 # Inicializando o cliente MongoDB
 client = MongoClient(
@@ -14,6 +16,7 @@ db = client["abuse"]  # Nome do banco de dados
 
 def add_ip(value, type, risk, notes, list):
     """Adiciona um IP único no banco de dados."""
+    data = datetime.now().strftime("%d-%m-%Y- %H:%M:%S")
     if db.ips.find_one({"value": value}):
         return jsonify({"message": "dado ja existe"}), 409
     db.ips.insert_one(
@@ -23,6 +26,7 @@ def add_ip(value, type, risk, notes, list):
             "risk": risk,
             "notes": notes,
             "list": list,
+            "date_sent": str(data) 
         }
     )
     return jsonify({"message": "ip adicionado"}), 201
