@@ -5,4 +5,4 @@ down:
 	@docker compose down
 
 up:
-	@docker compose up -d
+	@docker compose --env-file .env up -d
